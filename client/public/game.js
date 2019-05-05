@@ -1,64 +1,66 @@
 let player;
 let bullets = [];
+let players = [];
 let createBullet;
 let socket;
+let id;
 function setup() {
   createCanvas(800, 800);
   background(100, 100, 255);
   fill(0);
   rect(0, 790, 800, 10);
-  player = new Player(width / 2, height / 2);
-  createBullet = _.debounce(
-    dir => {
-      bullets.push(new Bullet(player.x + 5, player.y + 10, dir));
-    },
-    50,
-    { leading: true }
-  );
-  // socket = io.connect("http://localhost:8000");
-  // socket.on("test", data => console.log(data));
+  // player = new Player(width / 2, height / 2);
+  socket = io.connect("http://localhost:8000");
+  socket.on("connect", () => {
+    id = socket.id;
+  });
+  socket.on("newPlayer", newPlayer => (player = newPlayer));
+  socket.on("playerUpdate", updatedPlayers => (players = updatedPlayers));
+  socket.on("bulletUpdate", updatedBullets => (bullets = updatedBullets));
+  window.onbeforeunload = () => {
+    socket.emit("leave", socket.id);
+    console.log("SOCKET ID LEAVE", socket.id);
+    socket.disconnect();
+  };
 }
 function draw() {
   background(100, 100, 255);
-  if (player.grappling && !player.grappleConnected) {
-    player.grappleUpdate();
+  // if (player.grappling && !player.grappleConnected) {
+  //   player.grappleUpdate();
+  // }
+  // if (player.grappleConnected) {
+  //   player.grappleConnect();
+  // }
+  // console.log(players);
+  // console.log(player);
+
+  // console.log(bullets);
+  for (let bullet of bullets) {
+    fill(255);
+    circle(bullet.x, bullet.y, 10);
+    fill(0);
   }
-  if (player.grappleConnected) {
-    player.grappleConnect();
-  }
-  bulletsCopy = bullets.slice();
-  for (let i = 0; i < bulletsCopy.length; i++) {
-    if (bulletsCopy[i].isOutOfBounds()) {
-      bullets.splice(i, 1);
-    } else {
-      bulletsCopy[i].update();
+  // if (keyIsPressed) {
+  //   if (keyCode === 32) {
+  //     player.grapple();
+  //   }
+  // }
+  for (let currPlayer of players) {
+    if ((currPlayer.id = id)) {
+      player = currPlayer;
     }
-  }
-  if (keyIsPressed) {
-    console.log(keyCode);
-    if (keyCode === 87 || keyCode === 119) {
-      // up
-      player.move((3 * Math.PI) / 2, 2);
-    }
-    if (keyCode === 68 || keyCode === 100) {
-      // right
-      player.move(0, 2);
-    }
-    if (keyCode === 83 || keyCode === 115) {
-      // down
-      player.move(Math.PI / 2, 2);
-    }
-    if (keyCode === 65 || keyCode === 97) {
-      // left
-      player.move(Math.PI, 2);
-    }
-    if (keyCode === 32) {
-      player.grapple();
-    }
+    fill(0);
+    rect(player.x, player.y, 10, 30);
   }
   if (mouseIsPressed) {
     let dir = atan2(mouseY - player.y, mouseX - player.x);
-    createBullet(dir);
+    sendBulletRequest(dir, player.x, player.y);
   }
-  player.update();
 }
+const sendBulletRequest = _.debounce(
+  (dir, playerX, playerY) => {
+    socket.emit("newBullet", { direction: dir, x: playerX, y: playerY });
+  },
+  50,
+  { leading: true }
+);

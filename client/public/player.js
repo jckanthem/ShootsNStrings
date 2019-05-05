@@ -12,7 +12,6 @@ class Player {
     this.grappleCurrY;
     this.grappling = false;
     this.grappleConnected = false;
-    // this.grapple = _.debounce(this.grapple, 500, { leading: true });
   }
   update() {
     if (this.grappleConnected) {
