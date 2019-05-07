@@ -1,8 +1,10 @@
 class Bullet {
-  constructor(x, y, dir) {
+  constructor(x, y, dir, id) {
     this.x = x;
     this.y = y;
     this.dir = dir;
+    this.id = id;
+    this.width = 10;
   }
   update() {
     this.x += 20 * Math.cos(this.dir);
@@ -17,9 +19,8 @@ class Bullet {
 }
 let bullets = [];
 let bulletDataArr = [];
-const bulletLoopUpdate = () => {
+const bulletLoopUpdate = socket => {
   if (bullets.length !== 0) {
-    // console.log(bullets);
     let copy = bullets.slice();
     bulletDataArr = [];
     for (let i = 0; i < copy.length; i++) {
@@ -27,9 +28,14 @@ const bulletLoopUpdate = () => {
         bullets.splice(i, 1);
       } else {
         copy[i].update();
-        bulletDataArr.push({ x: copy[i].x, y: copy[i].y });
+        bulletDataArr.push({
+          x: copy[i].x,
+          y: copy[i].y,
+          width: copy[i].width
+        });
       }
     }
+    socket.emit("bulletUpdate", bulletDataArr);
   }
 };
 

@@ -18,7 +18,7 @@ Once the project moves into development, the press release can be used as a touc
 
 ## Heading
 
-> Shoots + Strings
+> grappl.io
 
 ## Sub-Heading
 
@@ -26,7 +26,7 @@ Once the project moves into development, the press release can be used as a touc
 
 ## Summary
 
-> Conquer your opponents in five rounds
+> Fly around the arena and attempt to conquer your enemies
 
 ## Problem
 
@@ -34,20 +34,20 @@ Once the project moves into development, the press release can be used as a touc
 
 ## Solution
 
-> Describe how your product elegantly solves the problem.
+> It's a game that you play when you're bored
 
 ## Quote from You
 
-> A quote from a spokesperson in your company.
+> This game has kept me entertained for at least 5 minutes
 
 ## How to Get Started
 
-> Describe how easy it is to get started.
+> Space to grapple, mouse to shoot
 
 ## Customer Quote
 
-> Provide a quote from a hypothetical customer that describes how they experienced the benefit.
+> "This game kept me entertained for minutes!"
 
 ## Closing and Call to Action
 
-> Wrap it up and give pointers where the reader should go next.
+> Play now! It's free with no time committment

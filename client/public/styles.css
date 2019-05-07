@@ -1,0 +1,13 @@
+body {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: left;
+}
+#defaultCanvas0 {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#tableDiv {
+  width: 150px;
+}
