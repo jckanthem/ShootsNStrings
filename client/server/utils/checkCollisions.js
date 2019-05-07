@@ -14,14 +14,15 @@ module.exports = checkCollisions = () => {
           bullet.y - 5 <= player.y + player.health * 10 &&
           bullet.y - 5 >= player.y)
       ) {
-        if (bullet.id !== player.id) {
+        if (bullet.id !== player.id && bullet.team !== player.team) {
+          console.log(bullet.team, player.team);
           bullet.x = 1000;
           bullet.y = 1000;
           player.health--;
           if (player.health <= 1) {
             for (let i = 0; i < players.length; i++) {
               if (players[i].id === bullet.id) {
-                if (players[i.user] !== "") {
+                if (players[i].user !== "") {
                   incrementScore(players[i].user);
                 }
               }

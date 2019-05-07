@@ -5,21 +5,34 @@ const io = require("socket.io")(server);
 const bullet = require("./components/bullet");
 const player = require("./components/player");
 const checkCollisions = require("./utils/checkCollisions");
+const { checkHealthGrab, healthPacks } = require("./utils/checkHealthGrab");
 const { findTop50 } = require("./scoreboard/scoreboard");
 app.use(express.static("../public"));
 
 let sockets = [];
+let team = 0;
 io.on("connection", socket => {
   sockets.push(socket);
-
+  let xPos;
+  if (team === 0) {
+    xPos = Math.random() * 300;
+  } else {
+    xPos = Math.random() * 300 + 1300;
+  }
   socket.on("newPlayer", newPlayerData => {
+    newTeam = team;
+    if (newPlayerData.team !== undefined) {
+      newTeam = newPlayerData.team;
+      console.log(newPlayerData);
+    }
     let newPlayer = new player.Player(
-      Math.random() * 790,
-      Math.random() * 790,
+      xPos,
+      Math.random() * 700,
       newPlayerData.id,
-      newPlayerData.user
+      newPlayerData.user,
+      newTeam
     );
-    console.log(newPlayer);
+    team === 0 ? (team = 1) : (team = 0);
     socket.emit("newPlayer", newPlayer);
     player.players.push(newPlayer);
     for (let i = 0; i < player.players.length; i++) {
@@ -39,7 +52,8 @@ io.on("connection", socket => {
         bulletData.x,
         bulletData.y,
         bulletData.direction,
-        bulletData.id
+        bulletData.id,
+        bulletData.team
       )
     );
   });
@@ -51,7 +65,11 @@ io.on("connection", socket => {
     }
   });
   socket.on("leave", id => {
+    if (sockets.length === 1) {
+      sockets = [];
+    }
     sockets.splice(sockets.indexOf(socket), 1);
+
     for (let i = 0; i < player.players.length; i++) {
       if (player.players[i].id === id) {
         if (player.players.length === 1) {
@@ -63,14 +81,29 @@ io.on("connection", socket => {
       }
     }
   });
+  socket.on("healthGrab", grabData => {
+    for (let socket of sockets) {
+      socket.emit("healthGrab", { id: grabData.team });
+    }
+    for (let player of players) {
+      if (player.id === grabData.id) {
+        player.health = 10;
+
+        break;
+      }
+    }
+  });
 });
 setInterval(() => {
   for (let socket of sockets) {
     bullet.bulletLoopUpdate(socket);
     player.playerLoopUpdate(socket);
+    checkHealthGrab(socket);
     checkCollisions();
+    socket.emit("healthUpdate", { healthPacks });
   }
 }, 1000 / 60);
+
 app.get("/scoreboard", (req, res) => {
   findTop50((err, docs) => {
     if (err) res.sendStatus(500);
