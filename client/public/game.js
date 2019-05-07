@@ -52,24 +52,29 @@ function draw() {
     }
     line(800, i, 800, i + 10);
   }
-  line(400, 300, 800, 300);
-  line(400, 310, 790, 310);
-  line(790, 310, 790, 375);
-  line(810, 310, 810, 375);
-  line(790, 425, 790, 500);
-  line(810, 425, 810, 500);
-  line(790, 375, 810, 375);
-  line(790, 425, 810, 425);
-  line(400, 500, 790, 500);
-  line(400, 510, 800, 510);
-  line(400, 300, 400, 310);
-  line(400, 500, 400, 510);
-  line(800, 300, 1200, 300);
-  line(810, 310, 1200, 310);
-  line(810, 500, 1200, 500);
-  line(800, 510, 1200, 510);
-  line(1200, 500, 1200, 510);
-  line(1200, 300, 1200, 310);
+  fill(100, 100, 100);
+  beginShape();
+  vertex(400, 300);
+  vertex(1200, 300);
+  vertex(1200, 310);
+  vertex(810, 310);
+  vertex(810, 375);
+  vertex(790, 375);
+  vertex(790, 310);
+  vertex(400, 310);
+  vertex(400, 300);
+  endShape();
+  beginShape();
+  vertex(400, 510);
+  vertex(1200, 510);
+  vertex(1200, 500);
+  vertex(810, 500);
+  vertex(810, 425);
+  vertex(790, 425);
+  vertex(790, 500);
+  vertex(400, 500);
+  vertex(400, 510);
+  endShape();
   for (let bullet of bullets) {
     fill(255);
     circle(bullet.x, bullet.y, bullet.width);
